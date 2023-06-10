@@ -12,8 +12,18 @@ int convert(char *infix, char *polska) {
     if(!status) {
         do {
             if ((*infix) >= '0' && (*infix) <= '9') {
-                *polska_pointer = *infix;
-                polska_pointer++;
+                push_to_str(&polska_pointer, *infix);
+                // *polska_pointer = *infix;
+                // polska_pointer++;
+                while((*(infix + 1)) >= '\0' && (*(infix + 1)) >= '0' && (*(infix + 1)) <= '9') {
+                    infix++;
+                    push_to_str(&polska_pointer, *infix);
+                    // *polska_pointer = *infix;
+                    // polska_pointer++;
+                }
+                // *polska_pointer = ' ';
+                // polska_pointer++;
+                push_to_str(&polska_pointer, ' ');
             }
             else if ((*infix) == '@') {
                 status = push_to_stack(&stack, *infix);
@@ -24,10 +34,6 @@ int convert(char *infix, char *polska) {
                 status = push_to_stack(&stack, *infix);
             }
             else if (strchr(operators_3, *infix)) {
-                while (strchr(operators_3, check_stack(&stack))) {
-                    *polska_pointer = pop_stack(&stack);
-                    polska_pointer++;
-                }
                 status = push_to_stack(&stack, *infix);
             }
             else if (strchr(operators_2, *infix)) {
@@ -45,13 +51,15 @@ int convert(char *infix, char *polska) {
                 status = push_to_stack(&stack, *infix);
             }
             else if ((*infix) == ')') {
-                while (check_stack(&stack) != '(' && !status) {
+                while ((check_stack(&stack) != '(') && (!status)) {
                     if (check_stack(&stack) == '!') {
                         status = 2; // ошибка в записи
-                        break;
+                        // break;
                     }
-                    *polska_pointer = pop_stack(&stack);
-                    polska_pointer++;
+                    else {
+                        *polska_pointer = pop_stack(&stack);
+                        polska_pointer++;
+                    }
                 }
                 pop_stack(&stack);
                 if (check_stack(&stack) >= '0' && check_stack(&stack) <= '9') {
@@ -63,15 +71,16 @@ int convert(char *infix, char *polska) {
             }
         }while(!status && *(++infix) != '\0');
         
-        while(check_stack(&stack) != '!') {
+        while((check_stack(&stack) != '!') && (!status)) {
 
-            if (check_stack(&stack) == '!') {
+            if (check_stack(&stack) == '(' || check_stack(&stack) == ')') {
                 status = 2; // ошибка в записи
-                break;
+                // break;
             }
-
-            *polska_pointer = pop_stack(&stack);
-            polska_pointer++;
+            else {
+                *polska_pointer = pop_stack(&stack);
+                polska_pointer++;
+            }
         }
     }
 
@@ -122,4 +131,9 @@ char pop_stack(stack *stack) {
         // mb realloc (???)
     }
     return ch;
+}
+
+void push_to_str(char **str, char ch) {
+    **str = ch;
+    *str = *str + 1;
 }

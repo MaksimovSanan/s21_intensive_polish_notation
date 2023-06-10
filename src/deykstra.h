@@ -12,3 +12,4 @@ void destroy_stack(stack *stack);
 int push_to_stack(stack *stack, char ch);
 char check_stack(stack *stack);
 char pop_stack(stack *stack);
+void push_to_str(char **str, char ch);

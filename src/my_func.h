@@ -1,6 +1,10 @@
 #ifndef STRING_H
 #define STRING_H
 
-double calculate(char *ch, int k, double x);
+#include <math.h>
+#include <stdio.h>
+#include <stdlib.h>
+
+double calculate(char **str, double x);
 
 #endif
