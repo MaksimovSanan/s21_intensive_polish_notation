@@ -11,18 +11,12 @@ int convert(char *infix, char *polska) {
     
     if(!status) {
         do {
-            if ((*infix) >= '0' && (*infix) <= '9') {
+            if (((*infix) >= '0' && (*infix) <= '9') || (*infix) == 'x') {
                 push_to_str(&polska_pointer, *infix);
-                // *polska_pointer = *infix;
-                // polska_pointer++;
-                while((*(infix + 1)) >= '\0' && (*(infix + 1)) >= '0' && (*(infix + 1)) <= '9') {
+                while((*(infix + 1)) != '\0' && (((*(infix + 1)) >= '0' && (*(infix + 1)) <= '9') || (*(infix + 1)) == '.')) {
                     infix++;
                     push_to_str(&polska_pointer, *infix);
-                    // *polska_pointer = *infix;
-                    // polska_pointer++;
                 }
-                // *polska_pointer = ' ';
-                // polska_pointer++;
                 push_to_str(&polska_pointer, ' ');
             }
             else if ((*infix) == '@') {
@@ -37,50 +31,30 @@ int convert(char *infix, char *polska) {
                 status = push_to_stack(&stack, *infix);
             }
             else if (strchr(operators_2, *infix)) {
-                while (strchr(operators_3, check_stack(&stack)) || strchr(operators_2, check_stack(&stack))) {
-                    *polska_pointer = pop_stack(&stack);
-                    polska_pointer++;
-                }
+                while (strchr(operators_3, check_stack(&stack)) || strchr(operators_2, check_stack(&stack))) push_to_str(&polska_pointer, pop_stack(&stack));
                 status = push_to_stack(&stack, *infix);
             }
             else if (strchr(operators_1, *infix)) {
-                while (strchr(operators_3, check_stack(&stack)) || strchr(operators_2, check_stack(&stack)) || strchr(operators_1, check_stack(&stack))) {
-                    *polska_pointer = pop_stack(&stack);
-                    polska_pointer++;
-                }
+                while (strchr(operators_3, check_stack(&stack)) || strchr(operators_2, check_stack(&stack)) || strchr(operators_1, check_stack(&stack))) push_to_str(&polska_pointer, pop_stack(&stack));
                 status = push_to_stack(&stack, *infix);
             }
             else if ((*infix) == ')') {
                 while ((check_stack(&stack) != '(') && (!status)) {
-                    if (check_stack(&stack) == '!') {
-                        status = 2; // ошибка в записи
-                        // break;
-                    }
-                    else {
-                        *polska_pointer = pop_stack(&stack);
-                        polska_pointer++;
-                    }
+                    if (check_stack(&stack) == '!') status = 2; // ошибка в записи (скобки)
+                    else push_to_str(&polska_pointer, pop_stack(&stack));
                 }
                 pop_stack(&stack);
                 if (check_stack(&stack) >= '0' && check_stack(&stack) <= '9') {
-                    *polska_pointer = pop_stack(&stack);
-                    polska_pointer++;
-                    *polska_pointer = pop_stack(&stack);
-                    polska_pointer++;
+                    push_to_str(&polska_pointer, pop_stack(&stack));
+                    push_to_str(&polska_pointer, pop_stack(&stack));
                 }
             }
         }while(!status && *(++infix) != '\0');
         
         while((check_stack(&stack) != '!') && (!status)) {
 
-            if (check_stack(&stack) == '(' || check_stack(&stack) == ')') {
-                status = 2; // ошибка в записи
-                // break;
-            }
-            else {
-                *polska_pointer = pop_stack(&stack);
-                polska_pointer++;
-            }
+            if (check_stack(&stack) == '(' || check_stack(&stack) == ')') status = 2; // ошибка в записи (скобки)
+            else push_to_str(&polska_pointer, pop_stack(&stack));
         }
     }
 

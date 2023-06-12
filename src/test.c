@@ -8,12 +8,15 @@ int main(void) {
     scanf("%s", str);
     // sscanf("123/43", "%s", str);
     int status = convert(str, polska);
-    if(!status) printf("%s\n", polska);
-    else printf("ERROR");
+    if(!status) {
+        printf("%s\n", polska);
+        char *polska_pointer = polska + (strlen(polska) - 1);
+        double x = 0;
+        printf("Введите значение x: ");
+        scanf("%lf", &x);
+        printf("%.7lf\n", calculate(&polska_pointer, x));
+    }
+    else printf("ERROR\nERROR\nERROR\n");
 
-    char *polska_pointer = polska + (strlen(polska) - 1);
-    printf("%.7lf\n", calculate(&polska_pointer, 5356));
-
-    // printf("%lf\n", calculate(&polska_pointer, 1));
     return 0;
 }
