@@ -6,15 +6,18 @@ int convert(char *infix, char *polska) {
     char *operators_2 = "*/%";
     char *operators_3 = "^";
     int status = 0;
+    int dot_flag = 0;
     stack stack;
     status = init_stack(&stack);
     
     if(!status) {
         do {
             if (((*infix) >= '0' && (*infix) <= '9') || (*infix) == 'x') {
+                dot_flag = 0;
                 push_to_str(&polska_pointer, *infix);
                 while((*(infix + 1)) != '\0' && (((*(infix + 1)) >= '0' && (*(infix + 1)) <= '9') || (*(infix + 1)) == '.')) {
                     infix++;
+                    (*(infix) == '.')? (dot_flag)? status = 22 : dot_flag++ : 0;
                     push_to_str(&polska_pointer, *infix);
                 }
                 push_to_str(&polska_pointer, ' ');
@@ -40,7 +43,7 @@ int convert(char *infix, char *polska) {
             }
             else if ((*infix) == ')') {
                 while ((check_stack(&stack) != '(') && (!status)) {
-                    if (check_stack(&stack) == '!') status = 2; // ошибка в записи (скобки)
+                    if (check_stack(&stack) == '!') status = 21; // ошибка в записи (скобки)
                     else push_to_str(&polska_pointer, pop_stack(&stack));
                 }
                 pop_stack(&stack);
@@ -49,11 +52,12 @@ int convert(char *infix, char *polska) {
                     push_to_str(&polska_pointer, pop_stack(&stack));
                 }
             }
+            else status = 20;
         }while(!status && *(++infix) != '\0');
         
         while((check_stack(&stack) != '!') && (!status)) {
 
-            if (check_stack(&stack) == '(' || check_stack(&stack) == ')') status = 2; // ошибка в записи (скобки)
+            if (check_stack(&stack) == '(' || check_stack(&stack) == ')') status = 21; // ошибка в записи (скобки)
             else push_to_str(&polska_pointer, pop_stack(&stack));
         }
     }

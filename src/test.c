@@ -16,7 +16,7 @@ int main(void) {
         scanf("%lf", &x);
         printf("%.7lf\n", calculate(&polska_pointer, x));
     }
-    else printf("ERROR\nERROR\nERROR\n");
+    else printf("ERROR\nERROR\nERROR\n%d\n", status);
 
     return 0;
 }
